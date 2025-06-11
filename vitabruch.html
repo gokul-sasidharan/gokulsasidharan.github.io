@@ -1,0 +1,133 @@
+<style>
+
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  color: #2c3e50;
+  padding: 20px;
+
+  /* Add this for background image */
+  background-image: url('file:///Downloads\brunch-bg.jpg'); /* relative path to your image */
+  background-repeat: no-repeat;
+  background-size: cover;   /* makes sure the image covers entire background */
+  background-position: center center; /* center the image */
+  background-attachment: fixed; /* image stays fixed when you scroll */
+}
+
+  //*body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #fffefc;
+    color: #2c3e50;
+    padding: 20px;
+  }*//
+
+  h2 {
+    color: #e67e22;
+    font-size: 28px;
+    margin-bottom: 10px;
+  }
+
+  form#brunchForm {
+    background: #fdf9f5;
+    border: 1px solid #e1e1e1;
+    padding: 15px 20px;
+    border-radius: 10px;
+    max-width: 400px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  }
+
+  form#brunchForm label {
+    display: block;
+    margin: 12px 0;
+    font-size: 16px;
+  }
+
+  input[type="checkbox"] {
+    margin-right: 10px;
+    transform: scale(1.2);
+  }
+
+  h3 {
+    font-size: 22px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+
+  #totalPrice {
+    font-weight: bold;
+    color: #27ae60;
+  }
+
+  #checkoutBtn {
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  #checkoutBtn:hover {
+    background-color: #219150;
+  }
+
+  #checkoutBtn:disabled {
+    background-color: #bdc3c7;
+    cursor: not-allowed;
+  }
+</style>
+
+<h2>Customize Your VitaBrunch</h2>
+<p>Select your items below. Price updates instantly. Checkout via WhatsApp when done.</p>
+
+<form id="brunchForm">
+  <label><input type="checkbox" name="item" value="Boiled Egg" data-price="8"> Boiled Egg (₹8)</label><br>
+  <label><input type="checkbox" name="item" value="Boiled Banana" data-price="10"> Boiled Banana (₹10)</label><br>
+  <label><input type="checkbox" name="item" value="Green Peas" data-price="10"> Green Peas (₹10)</label><br>
+  <label><input type="checkbox" name="item" value="Cut Fruits" data-price="10"> Cut Fruits (₹10)</label><br>
+  <label><input type="checkbox" name="item" value="Dry Fruits" data-price="15"> Dry Fruits (₹15)</label><br>
+  <label><input type="checkbox" name="item" value="Chicken Breast" data-price="22"> Chicken Breast (₹22)</label><br>
+</form>
+
+<h3>Total Price: ₹<span id="totalPrice">0</span></h3>
+
+<button id="checkoutBtn" disabled>Checkout via WhatsApp</button>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('brunchForm');
+    const totalPriceEl = document.getElementById('totalPrice');
+    const checkoutBtn = document.getElementById('checkoutBtn');
+
+    function updatePrice() {
+      let total = 0;
+      let selectedItems = [];
+
+      form.querySelectorAll('input[type=checkbox]').forEach(item => {
+        if (item.checked) {
+          total += parseInt(item.dataset.price);
+          selectedItems.push(item.value);
+        }
+      });
+
+      totalPriceEl.textContent = total;
+      checkoutBtn.disabled = total === 0;
+      checkoutBtn.dataset.order = selectedItems.join(', ');
+      checkoutBtn.dataset.total = total;
+    }
+
+    form.addEventListener('change', updatePrice);
+
+    checkoutBtn.addEventListener('click', function () {
+      const order = encodeURIComponent(this.dataset.order);
+      const total = this.dataset.total;
+      const whatsappNumber = '919207328738'; // Replace with your actual WhatsApp Business number
+      const message = `I would like to order: ${order}. Total Price: ₹${total}.`;
+      const url = `https://wa.me/${whatsappNumber}?text=${message}`;
+      window.open(url, '_blank');
+    });
+  });
+</script>
